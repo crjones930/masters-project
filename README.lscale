@@ -1,0 +1,60 @@
+Quick guide for using lscale:
+
+lscale calculates the vertical kinetic energy and heat fluxes and
+writes in "zero" files at each dump time the radial
+location where these fluxes change sign starting from the convective boundary
+r_env or r_core (depending on the star studied).
+
+lscale neeeds to be run twice:
+1) the first time with lscale_1.nml to generate the
+file avtij (time average of temperature T_ijk) over
+all cells (r,thetha,phi)  (required for the calculation of fluxcr3)
+
+  ./lscale lscale_1.nml  > res.1
+
+2) then run the small code "average_shear_new"
+which creates a file "av" containing the horizontal and time
+average of T as a function of radius (required for the calculation of
+fluxcr2)
+
+To compile average_shear_new.f:
+  gfortran -o average_shear_new average_shear_new.f
+  ./average_shear_new > res.av
+
+3) then run again lscale with lscale_2.nml
+(this will use the files av and avtij) and will
+generate the zero files in the subdirectory zerodir.
+
+  ./lscale lscale_2.nml > res.2
+
+4) Run again "average_shear_new" to get
+   the proper horizontal profiles of fluxcr2 and fluxcr3
+   in the struc* files.
+
+Before runing lscale:
+
+ 1. Create subdirectory fluxdir and zerodir:
+  mkdir zerodir
+  mkdir fluxdir
+
+2. Edit the lscale namelists lscale_1.nml and lscale_2.nml:
+
+  music_file_stem = '....'    --> name of the dumps
+  struc_stem = 'struc.cont997'  --> name of the structure files
+  flux_stem = 'fluxdir/fluxkc.cont997'
+  zero_stem = 'zerodir/zero.cont997'
+
+  file_name = 'fort12_307x313x43_krad_20msun_r0.12-0.27_t45-135phi22_msy0.55_evY.music'
+   (initial dump for music, if you do not have it, put the first dump)
+
+ 3. To run lscale you also need:
+     params.nml  (the namelist used to run music)
+     profile1d_scalars.dat   (a file providing r_env and r_core)
+
+
+4. To run "average_shear_new" you need:
+
+     - A file called "inputav"   (give name of file av where time/horizontal averages are stored
+                                  and t_beginning and t_end over which the time averages
+                                  are calculated)
+     - A filed called "mod" --> gives the list of "cont" relevant for all dumps
