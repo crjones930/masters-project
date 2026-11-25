@@ -1,7 +1,5 @@
 
 
 # masters-project
-<video width="600" controls playsinline>
-  <source src="https://github.com/user-attachments/assets/24b306f5-e564-4771-bd91-2faa314c61ff" type="video/mp4">
-</video>
+<img src="misc/20M_ZAMS_Om0_step1637_dT.png" alt="Image not displayed" width="400">
 Repository for all the code used in my master's project
